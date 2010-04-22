@@ -1,0 +1,18 @@
+useDynLib(affyILM)
+
+## export anything w/out a dot in front. 
+exportPattern("^[^\\.]")
+
+## Needed from affxparser
+importFrom(affxparser, readCelIntensities, readCelHeader)
+
+## Needed from affy
+importFrom(affy,cleancdfname)
+
+## Needed from gcrma
+importFrom(gcrma,getProbePackage)
+
+## Needed to plot, methods 
+import(graphics,methods)
+
+

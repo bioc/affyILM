@@ -1,0 +1,259 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%\VignetteIndexEntry{affyILM0.0.1}
+%\VignetteKeywords{Preprocessing, Affymetrix}
+%\VignetteDepends{affxparser,gcrma}
+%\VignettePackage{affyILM}
+%documentclass[12pt, a4paper]{article}
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage[authoryear,round]{natbib}
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rfunarg}[1]{{\textit{#1}}}
+
+
+\author{K. Myriam Kroll, Fabrice Berger, Gerard Barkema and Enrico Carlon}
+\begin{document}
+\title{Description of affyILM package}
+
+\maketitle
+\tableofcontents
+\section{Introduction}
+\Rpackage{affyILM} is a preprocessing tool which estimates gene expression
+levels for Affymetrix Gene Expression 
+Chips. The computation is divided into two parts: 
+\begin{enumerate}
+\item Background estimation for each feature based on input
+from physical chemistry (nearest neighbor model) as well as on the
+physical location of the features and their neighboring probes.
+\item Computation of gene expression levels from background-subtracted
+data using the Langmuir model. In contrast to other measures, this
+method outputs the gene expression level as concentrations measured
+in \textit{pM} (picoMolar).
+\end{enumerate}
+
+A linear function with $50$ parameters is used to describe the background intensity for
+each probe. The linear least square method is used to
+determine these $50$ parameters. In order to obtain these parameters, 
+\Rpackage{affyILM} uses a standard SVD (Singular Value Decomposition)
+algorithm based on Golub\&Reinsch (see e.g.~\cite{golu70,golu96}).
+
+$18$ of the $50$ parameters reflect the influence of the neighboring spots on the 
+background intensity of a particular
+feature. The next $16$ parameters incorporate the nearest-neighbor free energies (sequence dependence) and the last $16$ parameters modify the strength of the sequence dependence based upon the position of a nucleotide along the sequence. For a more detailed description on the theoretical background 
+of \Rpackage{affyILM} we refer the interested reader to~\cite{krol08,krol09}.\\
+
+\Rpackage{affyILM} allows the user to simultaneously read-in several CEL-files;
+it does \textit{not} require raw data (CEL-files) to be specifically formatted 
+like e.g. as \textit{AffyBatch}.
+In case more than one CEL-file is analyzed, a simple \textit{in-between} array normalization
+is done such that the median values of intensities of the CEL-files are identical.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Getting started}
+\label{sec:getstart}
+
+\subsection{Preliminaries}
+To build the package from source, you have to have the following components installed on your system:
+\begin{itemize}
+\item a C compiler
+\item GNU Scientific Library (GSL version 1.12)
+\item Basic Linear Algebra Subprograms (BLAS)
+\end{itemize}
+
+\Rpackage{affyILM} makes use of a few routines of the GNU Scientific Library (GSL), a software
+library which is freely distributed under the GNU General Public license and can be downloaded
+at \url{http://www.gnu.org/software/gsl/}.\\
+ 
+GSL requires a BLAS (Basic Linear Algebra Subprograms) library for basic vector and
+matrix operations. We recommend the user to replace the default BLAS library (supplied with GSL)
+by ATLAS (Automatically Tuned Linear Algebra Software), an optimized BLAS version which is freely 
+available under \url{http://math-atlas.sourceforge.net}. A list of optimized BLAS libraries for
+a variety of computer architectures can be found here:
+\url{http://www.netlib.org/blas/faq.html#5} 
+For instance, Mac users may use the built-in vecLib framework, 
+while users of Intel machines may use the Math Kernel Library (MKL). A C compiler is needed to 
+build the package as the core of the \Rpackage{affyILM} function is coded in C.\\
+
+For the package to be installed properly you might have to type the following command before installation:\\[6pt]
+\texttt{export LD\_LIBRARY\_PATH='/path/to/GSL/:/path/to/BLAS/':\$LD\_LIBRARY\_PATH}\\[6pt]
+which will tell {\bf R} where your GSL and BLAS libraries (see below for more details about BLAS libraries) 
+are.  Note that this might have already been configured on your system, so you might not have to do so.\\  
+In case you need to do it, you might consider copying and pasting the line in your \texttt{.bashrc} 
+so that you do not have to do it every time. 
+
+Now you are ready to install the package: \\[6pt]
+\texttt{R CMD INSTALL affyILM\_x.y.z.tar.gz}\\[6pt]
+The package will look for a BLAS library on your system, and by default it will choose gslcblas, 
+which is not optimized for your system.  To use an optimized BLAS library, you can use the 
+\texttt{-{}-with-blas} argument which will be passed to the \texttt{configure.ac} file. 
+For example, on a Mac with vecLib pre-installed the package may be installed via: \\[6pt]
+\texttt{R CMD INSTALL affyILM\_x.y.z.tar.gz -{}-configure-args="-{}-with-blas='-framework vecLib'"}\\[6pt]
+On a 64-bit Intel machine which has MKL as the optimized BLAS library, the command may look like: \\[6pt]
+%%%%%%% try to cut line
+\texttt{R CMD INSTALL affyILM\_x.y.z.tar.gz -{}-configure-args="-{}}\\
+\texttt{-with-blas='-L/usr/local/mkl/lib/em64t/ -lmkl -lguide -lpthread'"}\\[6pt]
+where \texttt{/usr/local/mkl/lib/em64t/} is the path to MKL. 
+
+If you prefer to install a prebuilt binary, you need GSL for successful installation.\\[2ex]
+
+\Rpackage{affyILM} imports several functions from other packages. Make sure to have the following installed:\\
+\Rpackage{affxparser}, \Rpackage{affy} and \Rpackage{gcrma}. Chip-specific probe packages which are 
+not yet installed on your system will be automatically downloaded from the bioconductor webpage if needed.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{First Steps}
+<<echo=false,results=hide>>=
+library(affy)
+library(gcrma)
+require(AffymetrixDataTestFiles)
+@
+
+For demonstration purposes we use a test CEL-file supplied by 
+\Rpackage{AffymetrixDataTestFiles}.
+<<results=hide>>=
+require(AffymetrixDataTestFiles)
+@
+
+Load the library
+<<>>=
+library(affyILM)
+@
+and locate the test CEL-file
+<<>>=
+file1 <- system.file("rawData","FusionSDK_HG-Focus","HG-Focus","2.Calvin","HG-Focus-1-121502.CEL",package="AffymetrixDataTestFiles")
+@
+
+Calculation of the background intensity as well as of the concentrations:
+<<>>=
+result <- ilm(file1) 
+@
+
+Now let's have a look at the output printed on the screen:
+\begin{itemize}
+\item Chip dimension
+\item probe package downloaded if missing
+\item the number of features used for background estimation depends on the threshold
+intensity according to which features to be used for the calculation are selected. The default
+value is $350$.
+\item Residual value of the linear least square problem 
+\end{itemize}
+
+Take a look at the calculated background intensities as well as the experimental PM's
+<<>>=
+getIntens(result,"AFFX-r2-Ec-bioD-5_at")
+@
+
+\texttt{Note:} The order in which the probes are displayed do
+not correspond to the original order!\\
+
+
+Plot the result:
+\begin{figure}[h!]
+\centering
+<<fig=true,width=12,height=8>>=
+plotIntens(result,"AFFX-r2-Ec-bioD-5_at","HG-Focus-1-121502.CEL")
+@
+\caption{Comparison between PM intensity and the background values}
+\label{fig:IPM_I0PM}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{More Examples with options}
+
+Analyze two or more CEL-files
+<<>>=
+file2 <- system.file("rawData","FusionSDK_HG-Focus","HG-Focus","2.Calvin","HG-Focus-2-121502.CEL",package="AffymetrixDataTestFiles")
+result2files <- ilm(c(file1,file2),400,12000) 
+@
+where only probes with an intensity up to $400$ are used for background calculation and
+the saturation limit of the Langmuir isotherm is increased to $12000$ (default: $10000$).\\[1ex]
+
+Get PM intensities and corresponding background values:
+<<>>=
+getIntens(result2files,"AFFX-r2-Ec-bioD-5_at")
+@
+
+\begin{itemize}
+\item 1st column: Probeset name
+\item Following columns (read pairwise,i.e.~2 columns per CEL-file): Measured PM intensities \texttt{IPM} and background estimates \texttt{I0PM}
+\end{itemize}
+
+
+The function of the background intensity per probe is characterized by its 50
+optimized parameters:
+<<>>=
+getParams(result2files)
+@
+
+To obtain the concentrations (or expression levels) per probeset, use 
+<<>>=
+getConcs(result2files,"AFFX-r2-Ec-bioD-5_at")
+@
+
+Use [ to subset the results on one or more probesets
+<<>>=
+res_1 <- result["AFFX-r2-Ec-bioD-5_at"]
+res_1
+res_2 <- result[c("AFFX-r2-Ec-bioD-5_at","207218_at")]
+res_2
+@
+and/or on one or more files:
+<<>>=
+res2_1 <- result2files["AFFX-r2-Ec-bioD-5_at"]
+res2_1
+res2_2 <- result2files[c("AFFX-r2-Ec-bioD-5_at","207218_at")]
+res2_2
+@
+The output objects are of class \texttt{ILM}.
+
+\pagebreak
+Plot the intensities:
+\begin{figure}[h!]
+\centering
+<<fig=true,width=12,height=8>>=
+plotIntens(result2files,"AFFX-r2-Ec-bioD-5_at","HG-Focus-1-121502.CEL")
+@
+\caption{Comparison between PM intensity and the background values}
+\label{fig:IPM_I0PM_2}
+\end{figure}
+
+\newpage
+\appendix
+
+\nocite{krol08}
+\nocite{krol09}
+\nocite{Muld09}
+\nocite{carl06}
+\nocite{sugi95}
+
+\bibliographystyle{plainnat}
+\bibliography{affyILM}
+ 
+
+
+
+\end{document}
+
+
+
+
+
