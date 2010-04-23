@@ -12,4 +12,3 @@ Suggests: AffymetrixDataTestFiles
 Description: affyILM is a preprocessing tool which estimates gene expression levels for Affymetrix Gene Chips. Input from physical chemistry is employed to first background subtract intensities before calculating concentrations on behalf of the Langmuir model.
 biocViews: Microarray, OneChannel, Preprocessing
 License: GPL version 3
-Packaged: 2010-04-22 17:43:52 UTC; cwon2
