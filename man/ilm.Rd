@@ -8,7 +8,7 @@ This function is the working horse of the package and is used as an overall
 function to calculate the background intensities as well as the concentrations.
 }
 \usage{
-result <- ilm(celfiles, threshold = 350, satLim = 10000)
+ilm(celfiles, threshold = 350, satLim = 10000)
 }
 \arguments{
   \item{celfiles}{

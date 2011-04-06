@@ -11,7 +11,7 @@ from parameter fit and concentrations}
 	 \describe{
     \item{\code{intens}:}{A \code{"matrix"} of size (number of probes) x (2x number of CEL-files). A set of two columns corresponds to one CEL-file where the first column contains the raw PM and the second one the background intensities per feature.}
     \item{\code{concs}:}{A \code{"matrix"} of size (number of probe sets) x (number of CEL-files) holding the concentration per probe set (picoMolar) calculated according to the Langmuir model.} 
-    \item{\code{parameter}:}{A \code{"matrix"} holding the 50 optimized parameter values/fitted parameters for each CEL-file (number of columns)}
+    \item{\code{params}:}{A \code{"matrix"} holding the 50 optimized parameter values/fitted parameters for each CEL-file (number of columns)}
     \item{\code{satLim}:}{Is the \code{"numeric"} saturation limit of the intensities of the Langmuir Isotherm, i.e. where the concentration is high or the probe-target binding free energies are large. The default value of \code{satLim} is 10000. }
 
   }
