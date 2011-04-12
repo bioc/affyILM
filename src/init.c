@@ -15,8 +15,8 @@ static const R_CMethodDef cMethods[] = {
 void R_init_affyILM(DllInfo *info)
 {
 	R_registerRoutines(info, cMethods, NULL, NULL, NULL);
-};
+}
 
 void R_unload_affyILM(DllInfo *info) {
 	/* Here could be code to release resources. */
-};
+}
