@@ -1,0 +1,13 @@
+Package: affyILM
+Type: Package
+Title: Linear Model of background subtraction and the Langmuir isotherm
+Version: 1.3.0
+Date: 2010-03-17
+Author: K. Myriam Kroll, Fabrice Berger, Gerard Barkema, Enrico Carlon
+Maintainer: Myriam Kroll and Fabrice Berger <affyILM@itf.fys.kuleuven.be>
+Depends: R (>= 2.10.0), methods
+Imports: affxparser (>= 1.16.0), gcrma, affy, graphics, methods, Biobase
+Suggests: AffymetrixDataTestFiles
+Description: affyILM is a preprocessing tool which estimates gene expression levels for Affymetrix Gene Chips. Input from physical chemistry is employed to first background subtract intensities before calculating concentrations on behalf of the Langmuir model.
+biocViews: Microarray, OneChannel, Preprocessing
+License: GPL version 3
