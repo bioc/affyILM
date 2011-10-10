@@ -1,0 +1,23 @@
+## export anything w/out a dot in front. 
+exportPattern("^[^\\.]")
+
+## Needed from affxparser
+importFrom(affxparser, readCelIntensities, readCelHeader)
+
+## Needed from affy
+importFrom(affy,cleancdfname)
+importFrom(affy,computeExprSet)
+
+## Needed from gcrma
+importFrom(gcrma,getProbePackage)
+
+## Needed from Biobase
+importFrom(Biobase,sampleNames)
+importFrom(Biobase,preproc)
+importFrom(Biobase,'preproc<-')
+importFrom(Biobase,notes)
+importFrom(Biobase,'notes<-')
+importFrom(Biobase,exprs)
+
+## Needed to plot, methods 
+import(graphics,methods)
