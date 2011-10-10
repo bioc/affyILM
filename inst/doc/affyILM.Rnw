@@ -1,0 +1,188 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%\VignetteIndexEntry{affyILM1.3.0}
+%\VignetteKeywords{Preprocessing, Affymetrix}
+%\VignetteDepends{affxparser,gcrma}
+%\VignettePackage{affyILM}
+%documentclass[12pt, a4paper]{article}
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage[authoryear,round]{natbib}
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rfunarg}[1]{{\textit{#1}}}
+
+
+\author{K. Myriam Kroll, Fabrice Berger, Gerard Barkema, Enrico Carlon}
+\begin{document}
+\title{Description of affyILM package}
+
+\maketitle
+\tableofcontents
+\section{Introduction}
+\Rpackage{affyILM} is a preprocessing tool which estimates gene expression
+levels for Affymetrix Gene Expression Chips. 
+affyILM computes gene expression levels using the Langmuir model. In contrast to other measures, this
+method outputs the gene expression level as concentrations measured
+in \textit{pM} (picoMolar).
+
+\Rpackage{affyILM} allows the user to simultaneously read-in several CEL-files;
+it does \textit{not} require raw data (CEL-files) to be specifically formatted 
+like e.g. as \textit{AffyBatch}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Getting started}
+\label{sec:getstart}
+
+\subsection{Preliminaries}
+To install the package: \\[6pt]
+\texttt{R CMD INSTALL affyILM\_x.y.z.tar.gz}\\[6pt]
+\Rpackage{affyILM} imports several functions from other packages. Make sure to have the following installed:\\
+\Rpackage{affxparser}, \Rpackage{affy} \Rpackage{Biobase} and \Rpackage{gcrma}. Chip-specific probe packages which are 
+not yet installed on your system will be automatically downloaded from the bioconductor webpage if needed.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{First Steps}
+<<echo=false,results=hide>>=
+library(affy)
+library(gcrma)
+require(AffymetrixDataTestFiles)
+@
+
+For demonstration purposes we use a test CEL-file supplied by 
+\Rpackage{AffymetrixDataTestFiles}.
+<<results=hide>>=
+require(AffymetrixDataTestFiles)
+@
+
+Load the library
+<<>>=
+library(affyILM)
+@
+and locate the test CEL-file
+<<>>=
+path <- system.file("rawData/FusionSDK_HG-Focus/HG-Focus/2.Calvin/",package="AffymetrixDataTestFiles");
+file1 <- paste(path,"HG-Focus-1-121502.CEL", sep="")
+@
+
+Calculation of the hybridization free energies for each probe, and estimation of concentrations using the Langmuir isotherm:
+<<>>=
+result <- ilm(file1); 
+@
+
+Now let's have a look at the output printed on the screen:
+\begin{itemize}
+\item Chip dimension
+\item probe package downloaded if missing
+\end{itemize}
+
+Take a look at the experimental PM's
+<<>>=
+getIntens(result,"AFFX-r2-Ec-bioD-5_at")
+@
+
+Plot the result:
+\begin{figure}[h!]
+\centering
+<<fig=true,width=12,height=8>>=
+plotIntens(result,"AFFX-r2-Ec-bioD-5_at","HG-Focus-1-121502.CEL")
+@
+\caption{Probes intensities}
+\label{fig:IPM_I0PM}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{More Examples with options}
+
+Analyze two or more CEL-files
+<<>>=
+file2 <- paste(path,"HG-Focus-2-121502.CEL", sep="")
+result2files <- ilm(c(file1,file2),satLim=12000) 
+@
+where the saturation limit of the Langmuir isotherm is increased to $12000$ (default: $10000$)\\[1ex]
+
+Get intensity values:
+<<>>=
+getIntens(result2files,"AFFX-r2-Ec-bioD-5_at")
+@
+
+\begin{itemize}
+\item 1st column: Probeset name
+\item 2nd and 3rd column: Measured PM intensities \texttt{IPM} of each file.
+\item 4th and 5th column: \texttt{I0} intensities of each file (default value is 0 in current release, no background estimation).
+\end{itemize}
+
+To obtain the probe concentrations (or expression levels), use 
+<<>>=
+getProbeConcs(result2files,"AFFX-r2-Ec-bioD-5_at")
+@
+
+Use [ to subset the results on one or more probesets
+<<>>=
+res_1 <- result["AFFX-r2-Ec-bioD-5_at"]
+res_1
+res_2 <- result[c("AFFX-r2-Ec-bioD-5_at","207218_at")]
+res_2
+@
+and/or on one or more files:
+<<>>=
+res2_1 <- result2files["AFFX-r2-Ec-bioD-5_at"]
+res2_1
+res2_2 <- result2files[c("AFFX-r2-Ec-bioD-5_at","207218_at")]
+res2_2
+@
+The output objects are of class \texttt{ILM}.
+
+\newpage 
+Plot the Langmuir Isotherm :
+\begin{figure}[h!]
+\centering
+<<fig=true,width=12,height=8>>=
+pILM<-plotILM(result2files,"AFFX-r2-Ec-bioD-5_at","HG-Focus-1-121502.CEL")
+@
+
+\caption{Illustration of the Langmuir Isotherm}
+\label{fig:IPM_I0PM_2}
+\end{figure}
+
+\newpage
+This function also provides a list with computed values:
+<<>>=
+print(str(pILM))
+@
+
+\newpage
+\appendix
+
+\nocite{krol08}
+\nocite{krol09}
+\nocite{Muld09}
+\nocite{sugi95}
+
+\bibliographystyle{plainnat}
+\bibliography{affyILM}
+ 
+
+
+
+\end{document}
+
+
+
+
+
