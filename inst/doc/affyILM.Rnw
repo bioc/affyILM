@@ -75,7 +75,7 @@ library(affyILM)
 @
 and locate the test CEL-file
 <<>>=
-path <- system.file("rawData/FusionSDK_HG-Focus/HG-Focus/2.Calvin/",package="AffymetrixDataTestFiles");
+path <- system.file("inst/rawData/FusionSDK_HG-Focus/HG-Focus/2.Calvin/",package="AffymetrixDataTestFiles");
 file1 <- paste(path,"HG-Focus-1-121502.CEL", sep="")
 @
 
