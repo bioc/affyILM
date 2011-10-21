@@ -8,7 +8,7 @@ This function is the working horse of the package and is used as an overall
 function to calculate the background intensities as well as the concentrations.
 }
 \usage{
-result <-ilm(celfiles,satLim=10000,scale.method="linear",scale.target="concs",cdf.name=NULL,probe.table=NULL,probe.name=NULL,na.replace=list(median,max),bgcorrect=F,summarize.level="none",summary.method="none",summary.na.rm=TRUE,dgDRpairs=NULL,dgRRpairs=NULL,beta=NULL)
+ilm(celfiles,satLim=10000,scale.method="linear",scale.target="concs",cdf.name=NULL,probe.table=NULL,probe.name=NULL,na.replace=NULL,bgcorrect=F,summarize.level="none",summary.method="none",summary.na.rm=TRUE,dgDRpairs=NULL,dgRRpairs=NULL,beta=NULL)
 }
 \arguments{
   \item{celfiles}{
