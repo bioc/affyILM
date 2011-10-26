@@ -75,8 +75,9 @@ library(affyILM)
 @
 and locate the test CEL-file
 <<>>=
-path <- system.file("rawData/FusionSDK_HG-Focus/HG-Focus/2.Calvin/", package="AffymetrixDataTestFiles");
-file1 <- paste(path,"HG-Focus-1-121502.CEL", sep="")
+path <- system.file("rawData", "FusionSDK_HG-Focus", "HG-Focus", "2.Calvin", 
+    package="AffymetrixDataTestFiles")
+file1 <- file.path(path,"HG-Focus-1-121502.CEL")
 @
 
 Calculation of the hybridization free energies for each probe, and estimation of concentrations using the Langmuir isotherm:
@@ -111,7 +112,7 @@ plotIntens(result,"AFFX-r2-Ec-bioD-5_at","HG-Focus-1-121502.CEL")
 
 Analyze two or more CEL-files
 <<>>=
-file2 <- paste(path,"HG-Focus-2-121502.CEL", sep="")
+file2 <- file.path(path,"HG-Focus-2-121502.CEL")
 result2files <- ilm(c(file1,file2),satLim=12000) 
 @
 where the saturation limit of the Langmuir isotherm is increased to $12000$ (default: $10000$)\\[1ex]
