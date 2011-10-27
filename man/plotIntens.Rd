@@ -29,9 +29,10 @@ plotIntens(object,y,z,...)
 \code{\linkS4class{ILM}},\code{\link{plotILM}}}
 
 \examples{
-path <- system.file("rawData/FusionSDK_HG-Focus/HG-Focus/2.Calvin/",package="AffymetrixDataTestFiles");
-file1 <- paste(path,"HG-Focus-1-121502.CEL", sep="")
-file2 <- paste(path,"HG-Focus-2-121502.CEL", sep="")
+path <- system.file("rawData", "FusionSDK_HG-Focus", "HG-Focus", "2.Calvin",
+    package="AffymetrixDataTestFiles")
+file1 <- file.path(path,"HG-Focus-1-121502.CEL")
+file2 <- file.path(path,"HG-Focus-2-121502.CEL")
 result2 <- ilm(c(file1,file2))
 ## plot output
 plotIntens(result2,y="203561_at",z="HG-Focus-2-121502.CEL")

@@ -81,8 +81,9 @@ G Mulders, GT Barkema and E Carlon, Inverse Langmuir method for oligonucleotide 
 
 \examples{
 ## Locate and read in CEL-file
-path <- system.file("rawData/FusionSDK_HG-Focus/HG-Focus/2.Calvin/",package="AffymetrixDataTestFiles");
-file1 <- paste(path,"HG-Focus-1-121502.CEL", sep="")
+path <- system.file("rawData", "FusionSDK_HG-Focus", "HG-Focus", "2.Calvin",
+    package="AffymetrixDataTestFiles")
+file1 <- file.path(path,"HG-Focus-1-121502.CEL")
 ## Calculation of background estimates and expression values (concentrations)
 result <- ilm(file1)
 ## show all
@@ -92,7 +93,7 @@ show(result)
 result["AFFX-r2-P1-cre-5_at"]
 
 ## Analysis of two files
-file2 <- paste(path,"HG-Focus-2-121502.CEL", sep="")
+file2 <- file.path(path,"HG-Focus-2-121502.CEL")
 result2 <- ilm(c(file1,file2))
 }
 

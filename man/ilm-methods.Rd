@@ -71,8 +71,9 @@ An object of the class \code{\linkS4class{ILM}} when subsetting \code{"["}
 
 \examples{
 ## Locate and read in CEL-file
-path <- system.file("rawData/FusionSDK_HG-Focus/HG-Focus/2.Calvin/",package="AffymetrixDataTestFiles");
-file1 <- paste(path,"HG-Focus-1-121502.CEL", sep="")
+path <- system.file("rawData", "FusionSDK_HG-Focus", "HG-Focus", "2.Calvin",
+    package="AffymetrixDataTestFiles")
+file1 <- file.path(path,"HG-Focus-1-121502.CEL")
 ## Calculation of background estimates and expression values (concentrations)
 result <- ilm(file1)
 ## Background intensities of all probes
