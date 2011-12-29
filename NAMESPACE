@@ -8,8 +8,6 @@ importFrom(affxparser, readCelIntensities, readCelHeader)
 importFrom(affy,cleancdfname)
 importFrom(affy,computeExprSet)
 
-## Needed from gcrma
-importFrom(gcrma,getProbePackage)
 
 ## Needed from Biobase
 importFrom(Biobase,sampleNames)
