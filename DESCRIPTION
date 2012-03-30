@@ -1,7 +1,7 @@
 Package: affyILM
 Type: Package
 Title: Linear Model of background subtraction and the Langmuir isotherm
-Version: 1.8.0
+Version: 1.9.0
 Date: 2010-03-17
 Author: K. Myriam Kroll, Fabrice Berger, Gerard Barkema, Enrico Carlon
 Maintainer: Myriam Kroll and Fabrice Berger <fabrice.berger@gmail.com>
