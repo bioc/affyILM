@@ -6,8 +6,8 @@ Date: 2010-03-17
 Author: K. Myriam Kroll, Fabrice Berger, Gerard Barkema, Enrico Carlon
 Maintainer: Myriam Kroll and Fabrice Berger <fabrice.berger@gmail.com>
 Depends: R (>= 2.10.0), methods, gcrma
-Imports: affxparser (>= 1.16.0), affy, graphics, methods, Biobase
+Imports: affxparser (>= 1.16.0), affy, graphics, Biobase
 Suggests: AffymetrixDataTestFiles, hgfocusprobe
 Description: affyILM is a preprocessing tool which estimates gene expression levels for Affymetrix Gene Chips. Input from physical chemistry is employed to first background subtract intensities before calculating concentrations on behalf of the Langmuir model.
 biocViews: Microarray, OneChannel, Preprocessing
-License: GPL version 3
+License: GPL-3

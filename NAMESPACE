@@ -19,3 +19,5 @@ importFrom(Biobase,exprs)
 
 ## Needed to plot, methods 
 import(graphics,methods)
+importFrom(stats, mad, median, medpolish)
+importFrom(gcrma, getProbePackage)
